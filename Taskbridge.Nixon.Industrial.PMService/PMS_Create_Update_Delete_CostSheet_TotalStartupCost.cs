@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
-namespace Taskbridge.Nixon.Industrial.KDServiceMaintenance
+namespace Taskbridge.Nixon.Industrial.PMService
 {
-    public class Taskbridge_Nixon_Industrial_KDServiceMaintenance_Create
+    public class PMS_Create_Update_Delete_CostSheet_TotalStartupCost
     {
         /// <summary>
         /// A plugin that add all the related Planeed maintenance and KD records 'Total contract Price' and updtaes cost sheet Total startup Price field.
@@ -55,7 +55,7 @@ namespace Taskbridge.Nixon.Industrial.KDServiceMaintenance
                         {
                             Guid costsheetid = (ent.GetAttributeValue<EntityReference>("bolt_relatedcostsheet")).Id;
 
-                            if ((entity.LogicalName != "bolt_plannedmaintenanceservice" || entity.LogicalName != "bolt_kdservicemaintenance") && costsheetid != null)
+                            if (entity.LogicalName == "bolt_plannedmaintenanceservice" && costsheetid != null)
                             {
                                 PMAmountcalculation(costsheetid);
                                 KDAmountcalculation(costsheetid);
