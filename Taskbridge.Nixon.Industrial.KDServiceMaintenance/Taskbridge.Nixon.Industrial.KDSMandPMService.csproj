@@ -92,6 +92,7 @@
     <Compile Include="PMServicePrice.cs" />
     <Compile Include="CostSheet_TotalStartupCost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateServiceDates.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
