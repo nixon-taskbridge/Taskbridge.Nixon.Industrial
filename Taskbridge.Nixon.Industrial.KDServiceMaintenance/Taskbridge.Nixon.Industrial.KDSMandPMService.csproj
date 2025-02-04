@@ -7,8 +7,8 @@
     <ProjectGuid>{B275019E-1C11-4D7E-8AA3-9F443B5B3ABB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Taskbridge.Nixon.Industrial.KDServiceMaintenance</RootNamespace>
-    <AssemblyName>Taskbridge.Nixon.Industrial.KDServiceMaintenance</AssemblyName>
+    <RootNamespace>Taskbridge.Nixon.Industrial.KDSMandPMService</RootNamespace>
+    <AssemblyName>Taskbridge.Nixon.Industrial.KDSMandPMService</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -89,8 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create_Update_of_KDSM_CalculatePMServicePrice.cs" />
-    <Compile Include="Create_Update_Delete_of_KDSM_UpdateCostSheet_TotalStartupCost.cs" />
+    <Compile Include="PMServicePrice.cs" />
+    <Compile Include="CostSheet_TotalStartupCost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

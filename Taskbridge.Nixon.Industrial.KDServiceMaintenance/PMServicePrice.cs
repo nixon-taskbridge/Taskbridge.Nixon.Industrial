@@ -9,10 +9,10 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace Taskbridge.Nixon.Industrial.KDServiceMaintenance
 {
-    public class Create_Update_of_KDSM_CalculatePMServicePrice : IPlugin
+    public class PMServicePrice : IPlugin
     {
         /// <summary>
-        /// A plugin that setsup service price on the KD maintenance, Special pricing entities.
+        /// A plugin that setsup service price on the Planned mainetanace, KD maintenance, Special pricing entities.
         /// PM service pricing table has the prices 
         /// 
         /// </summary>
@@ -52,9 +52,21 @@ namespace Taskbridge.Nixon.Industrial.KDServiceMaintenance
 
                     Entity ent = service.Retrieve(entity.LogicalName, entity.Id, new ColumnSet(true));
 
-                   
+                    // PLANEED Maintenanc sERVICE
+                    if (ent.LogicalName == "bolt_plannedmaintenanceservice" && ent.Attributes.Contains("bolt_generatormake") && ent.Attributes.Contains("bolt_fueltype") && ent.Attributes.Contains("bolt_travelduration") && ent.Attributes.Contains("bolt_generatorkw") && ent.Attributes.Contains("bolt_pmservicedescription"))
+                    {
+                        string genMake = (ent.FormattedValues["bolt_generatormake"]).ToUpper();
+                        int fuelType = ent.GetAttributeValue<OptionSetValue>("bolt_fueltype").Value;
+                        int travelDuration = ent.GetAttributeValue<OptionSetValue>("bolt_travelduration").Value;
+                        if (genMake != "KOHLER" && genMake != "CAT" && genMake != "CUMMINS") //if make is otherthan kohler, CUMINS and CAT, then default genMake  to "KOHLER"
+                        {
+                            genMake = "KOHLER"; //all pm service descriptions starts with the Genmake(kohle,cat,cummins,) prefix.
+                        }
+
+                        Get_ServicePrice(ent, genMake, fuelType, travelDuration);
+                    }
                     // KD Maintenanc sERVICE
-                    if (ent.LogicalName == "bolt_kdservicemaintenance" && ent.Attributes.Contains("bolt_kdkwsize") && ent.Attributes.Contains("bolt_servicedescription"))
+                    else if (ent.LogicalName == "bolt_kdservicemaintenance" && ent.Attributes.Contains("bolt_kdkwsize") && ent.Attributes.Contains("bolt_servicedescription"))
                     {
                         int fuelType = ent.GetAttributeValue<OptionSetValue>("bolt_fueltype").Value;
                         int travelDuration = ent.GetAttributeValue<OptionSetValue>("bolt_travelduration").Value;
@@ -62,7 +74,15 @@ namespace Taskbridge.Nixon.Industrial.KDServiceMaintenance
                         string prefix = "KD"; //since KD service has no generator make field, so defaulting it to KD. All KD service descriptions starts with the 'KD' prefix 
 
                         Get_ServicePrice(ent, prefix, fuelType, travelDuration);
-                    }                  
+                    }
+                    else if (ent.LogicalName == "bolt_plannedmaintenanceservice" && ent.Attributes.Contains("bolt_loadbanktest") && ent.Attributes.Contains("bolt_generatorkw"))// this step is for to calculate loadbank price.
+                    {
+                        genSize = ent.GetAttributeValue<int>("bolt_generatorkw");
+                        string columnName = ConstructKWSizeFieldName(genSize, ent);
+                        //set the prices on Service record
+                        if (columnName != null)
+                            SetPrices(ent, columnName); // this method pulls loadbank price and updates PM Table.
+                    }
                     else if (ent.LogicalName == "bolt_kdservicemaintenance" && ent.Attributes.Contains("bolt_loadbanktest") && ent.Attributes.Contains("bolt_kdkwsize"))// this step is for only to calculate loadbank price.
                     {
                         genSize = ent.GetAttributeValue<int>("bolt_kdkwsize");
